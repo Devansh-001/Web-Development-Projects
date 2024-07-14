@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+            box-sizing: border-box;
+        }
+
+        .containor {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+            height: 100vh;
+        }
+
+        .ticTacToe {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1px;
+            background-color: black;
+        }
+
+        .row {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+
+        }
+
+        .boxes {
+            width: 100px;
+            height: 100px;
+            background-color: aqua;
+            margin: 10px;
+            font-size: 35px;
+            font-weight: bold;
+            color: black;
+        }
+
+        .boxes:hover {
+            border: 4px solid #673AB7;
+            cursor: pointer;
+            transform: translateY(-4px)
+        }
+
+        button:hover {
+            cursor: pointer;
+        }
+
+        #reset {
+            background-color: black;
+            border: 2px solid black;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 10px;
+            color: white;
+
+        }
+
+        #result {
+            background-color: #c1ffe5;
+            display: flex;
+            align-items: center;
+            font-size: 25px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 20px;
+            display: none;
+        }
+
+        #newGame {
+            background-color: black;
+            border: 2px solid black;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 10px;
+            color: white;
+            display: none;
+        }
+
+        .bottomBox {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="containor">
+        <h1>Tic Tac Toe</h1>
+        <div class="ticTacToe">
+            <div class="row">
+                <button onclick="input(id)" id="box1" class="boxes"></button>
+                <button onclick="input(id)" id="box2" class="boxes"></button>
+                <button onclick="input(id)" id="box3" class="boxes"></button>
+            </div>
+
+            <div class="row">
+                <button onclick="input(id)" id="box4" class="boxes"></button>
+                <button onclick="input(id)" id="box5" class="boxes"></button>
+                <button onclick="input(id)" id="box6" class="boxes"></button>
+            </div>
+
+            <div class="row">
+                <button onclick="input(id)" id="box7" class="boxes"></button>
+                <button onclick="input(id)" id="box8" class="boxes"></button>
+                <button onclick="input(id)" id="box9" class="boxes"></button>
+            </div>
+        </div>
+        <div class="bottomBox">
+            <button id="reset" onclick="reset()">RESET</button>
+            <button id="newGame" onclick="newGame()">New Game</button>
+            <p id="result"></p>
+        </div>
+    </div>
+
+    <script>
+        let boxes = document.getElementsByClassName('boxes')
+        let player1 = 'X'
+        let player2 = 'O'
+        let turn = 'player1'
+        let count = 0
+        let win = false
+        let winningPatterns = [[1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9],
+        [1, 4, 7],
+        [2, 5, 8],
+        [3, 6, 9],
+        [1, 5, 9],
+        [3, 5, 7]
+        ]
+
+        function input(id) {
+            if (turn == 'player1') {
+                document.getElementById(id).innerHTML = player1
+                console.log("Player 1 moved")
+                turn = 'player2'
+                count++
+                console.log(count)
+                console.log(win)
+                checkWinner()
+            }
+            else if (turn == 'player2') {
+                document.getElementById(id).innerHTML = player2
+                console.log("Player 2 moved")
+                turn = 'player1'
+                count++
+                console.log(count)
+                console.log(win)
+                checkWinner()
+            }
+            document.getElementById(id).disabled = true
+        }
+        async function checkWinner() {
+            for (const pattern of winningPatterns) {
+                let box1 = document.getElementById('box' + pattern[0]).innerHTML
+                let box2 = document.getElementById('box' + pattern[1]).innerHTML
+                let box3 = document.getElementById('box' + pattern[2]).innerHTML
+                if ((box1 == 'X' || box1 == 'O') && (box1 == box2) && (box2 == box3)) {
+                    console.log("Winner Found")
+                    win = true
+                    console.log(win)
+                    document.getElementById('newGame').style.display = 'block'
+                    document.getElementById('reset').style.display = 'none'
+                    disabled()
+
+                    if (box1 == 'X') {
+                        console.log("WINNER====> Player 1")
+                        document.getElementById('result').style.display = 'flex'
+                        document.getElementById('result').innerHTML = 'Player 1 Wins The Game'
+
+                    }
+                    else if (box1 == 'O') {
+                        console.log("WINNER====> Player 2")
+                        document.getElementById('result').style.display = 'flex'
+                        document.getElementById('result').innerHTML = 'Player 2 Wins The Game'
+
+                    }
+                }
+            }
+            if ((count >= 9) && (win == false)) {
+                console.log(win)
+                document.getElementById('result').innerHTML = 'Game is Ended in a Draw'
+                document.getElementById('result').style.display = 'flex'
+                console.log('Draw')
+            }
+        }
+        function reset() {
+            for (const box of boxes) {
+                box.innerHTML = ''
+                turn = 'player1'
+                box.disabled = false
+                document.getElementById('result').innerHTML = ''
+                document.getElementById('result').style.display = 'none'
+                count = 0
+                console.clear()
+                win = false
+
+            }
+        }
+        function newGame() {
+            for (const box of boxes) {
+                box.innerHTML = ''
+                box.disabled = false
+                turn = 'player1'
+                document.getElementById('result').innerHTML = ''
+                document.getElementById('result').style.display = 'none'
+                document.getElementById('reset').style.display = 'block'
+                document.getElementById('newGame').style.display = 'none'
+                count = 0
+                win = false
+                console.clear()
+            }
+        }
+        function disabled() {
+            for (const box of boxes) {
+                box.disabled = true
+            }
+        }
+    </script>
+</body>
+
+</html>
